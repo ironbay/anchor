@@ -1,0 +1,251 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jsonschema 1`] = `
+"{
+  \\"UserDataCreate\\": {
+    \\"title\\": \\"UserDataCreate\\",
+    \\"additionalProperties\\": false,
+    \\"type\\": \\"object\\",
+    \\"properties\\": {
+      \\"id\\": {
+        \\"type\\": \\"string\\",
+        \\"format\\": \\"uuid\\"
+      },
+      \\"type\\": {
+        \\"const\\": \\"user\\"
+      },
+      \\"attributes\\": {
+        \\"type\\": \\"object\\",
+        \\"additionalProperties\\": false,
+        \\"properties\\": {
+          \\"name\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": []
+      },
+      \\"relationships\\": {
+        \\"type\\": \\"object\\",
+        \\"additionalProperties\\": false,
+        \\"properties\\": {
+          \\"posts\\": {
+            \\"type\\": \\"object\\",
+            \\"additionalProperties\\": false,
+            \\"properties\\": {
+              \\"data\\": {
+                \\"type\\": \\"object\\",
+                \\"additionalProperties\\": false,
+                \\"required\\": [
+                  \\"id\\",
+                  \\"type\\"
+                ],
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"type\\": {
+                    \\"const\\": \\"article\\"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    \\"required\\": [
+      \\"id\\",
+      \\"attributes\\",
+      \\"relationships\\",
+      \\"type\\"
+    ]
+  },
+  \\"PostDataCreate\\": {
+    \\"title\\": \\"PostDataCreate\\",
+    \\"additionalProperties\\": false,
+    \\"type\\": \\"object\\",
+    \\"properties\\": {
+      \\"id\\": {
+        \\"type\\": \\"string\\",
+        \\"format\\": \\"uuid\\"
+      },
+      \\"type\\": {
+        \\"const\\": \\"post\\"
+      },
+      \\"attributes\\": {
+        \\"type\\": \\"object\\",
+        \\"additionalProperties\\": false,
+        \\"properties\\": {
+          \\"title\\": {
+            \\"type\\": \\"string\\"
+          }
+        },
+        \\"required\\": []
+      },
+      \\"relationships\\": {
+        \\"type\\": \\"object\\",
+        \\"additionalProperties\\": false,
+        \\"properties\\": {
+          \\"author\\": {
+            \\"type\\": \\"object\\",
+            \\"additionalProperties\\": false,
+            \\"properties\\": {
+              \\"data\\": {
+                \\"type\\": \\"object\\",
+                \\"additionalProperties\\": false,
+                \\"required\\": [
+                  \\"id\\",
+                  \\"type\\"
+                ],
+                \\"properties\\": {
+                  \\"id\\": {
+                    \\"type\\": \\"string\\"
+                  },
+                  \\"type\\": {
+                    \\"const\\": \\"user\\"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    \\"required\\": [
+      \\"id\\",
+      \\"attributes\\",
+      \\"relationships\\",
+      \\"type\\"
+    ]
+  }
+}"
+`;
+
+exports[`orbit 1`] = `
+"import { ModelDefinition } from \\"@orbit/records\\";
+export const Models: Record<string, ModelDefinition> = {
+  user: {
+    attributes: {
+      name: {
+        type: \\"string\\",
+      },
+    },
+    relationships: {
+      posts: {
+        inverse: \\"author\\",
+        model: \\"article\\",
+        kind: \\"hasMany\\",
+      },
+    },
+  },
+  post: {
+    attributes: {
+      title: {
+        type: \\"string\\",
+      },
+    },
+    relationships: {
+      author: {
+        inverse: \\"articles\\",
+        model: \\"user\\",
+        kind: \\"hasOne\\",
+      },
+    },
+  },
+};
+"
+`;
+
+exports[`typescript 1`] = `
+"export type UserDataRead = {
+  id: string;
+  type: \\"user\\";
+  attributes: {
+    name: string;
+  };
+  relationships: {
+    posts?: {
+      data: {
+        id: string;
+        type: \\"article\\";
+      }[];
+    };
+  };
+};
+export type UserDataCreate = {
+  id: string;
+  type: \\"user\\";
+  attributes: {
+    name?: string;
+  };
+  relationships: {
+    posts?: {
+      data: {
+        id: string;
+        type: \\"article\\";
+      }[];
+    };
+  };
+};
+export type UserDataUpdate = {
+  id: string;
+  type: \\"user\\";
+  attributes: {
+    name?: string;
+  };
+  relationships: {
+    posts?: {
+      data: {
+        id: string;
+        type: \\"article\\";
+      }[];
+    };
+  };
+};
+export type PostDataRead = {
+  id: string;
+  type: \\"post\\";
+  attributes: {
+    title: string;
+  };
+  relationships: {
+    author?: {
+      data: {
+        id: string;
+        type: \\"user\\";
+      };
+    };
+  };
+};
+export type PostDataCreate = {
+  id: string;
+  type: \\"post\\";
+  attributes: {
+    title?: string;
+  };
+  relationships: {
+    author?: {
+      data: {
+        id: string;
+        type: \\"user\\";
+      };
+    };
+  };
+};
+export type PostDataUpdate = {
+  id: string;
+  type: \\"post\\";
+  attributes: {
+    title?: string;
+  };
+  relationships: {
+    author?: {
+      data: {
+        id: string;
+        type: \\"user\\";
+      };
+    };
+  };
+};
+"
+`;

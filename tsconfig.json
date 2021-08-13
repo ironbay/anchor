@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/node12/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["DOM"],
+    "outDir": "dist",
+    "strict": false,
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
+}
