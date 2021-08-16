@@ -1,6 +1,6 @@
 {
   "name": "@ironbay/anchor",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "license": "MIT",
   "main": "dist",
   "bin": {
@@ -35,5 +35,9 @@
     "pascal-case": "^3.1.2",
     "prettier": "^2.3.2",
     "ts-morph": "^9.1.0"
+  },
+  "repository": "https://github.com/ironbay/anchor",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
