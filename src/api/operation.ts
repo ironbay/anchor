@@ -53,17 +53,19 @@ export type Resource = {
   id: string
   type: string
   attributes: Record<string, any>
-  relationships: Record<
-    string,
-    {
-      data:
-        | {
-            id: string
-            type: string
-          }
-        | { id: string; type: string }[]
-    }
-  >
+  relationships: {
+    [key: string]:
+      | {
+          data:
+            | {
+                id: string
+                type: string
+              }
+            | { id: string; type: string }[]
+            | undefined
+        }
+      | undefined
+  }
 }
 
 export type Response<T extends Resource = Resource> =

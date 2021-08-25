@@ -37,7 +37,6 @@ function buildSchema<T extends keyof AttributeDefinition["ops"]>(
     properties: {
       id: {
         type: "string",
-        format: "uuid",
       },
       type: {
         const: resource.type,

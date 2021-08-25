@@ -130,13 +130,16 @@ function useBody<T>(event: APIGatewayProxyEventV2) {
       code: "body_missing",
       detail: "Request body is missing",
     })
+  const body = event.isBase64Encoded
+    ? Buffer.from(event.body, "base64").toString()
+    : event.body
   try {
-    return JSON.parse(event.body) as T
+    return JSON.parse(body) as T
   } catch {
     throw new Errors.GenericError({
       status: 400,
       code: "invalid_json",
-      detail: "JSON was formatted incorrectly",
+      detail: `JSON was formatted incorrectly: ${body}`,
     })
   }
 }
