@@ -26,6 +26,7 @@ export type OperationList<T extends string = string> = OperationGetBase<T> & {
   page: {
     offset?: number
     limit?: number
+    token?: string
   }
 }
 

@@ -92,6 +92,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       page: {
         offset: offset ? parseInt(offset) : undefined,
         limit: limit ? parseInt(limit) : undefined,
+        token: query["page[token]"],
       },
     }
     return invoke(processor, "list", [result, ctx])
