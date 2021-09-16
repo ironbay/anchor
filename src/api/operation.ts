@@ -1,6 +1,6 @@
 export type Operation =
   | OperationGet
-  | OperationAdd
+  | OperationCreate
   | OperationUpdate
   | OperationList
 
@@ -12,34 +12,32 @@ export type Filter = {
   eq?: string
 }
 
-type OperationGetBase<T extends Resource = Resource> = {
+type OperationGetBase<T extends string = string> = {
   op: "get"
   ref: {
-    type: T["type"]
+    type: T
   }
 }
 
-export type OperationList<T extends Resource = Resource> =
-  OperationGetBase<T> & {
-    params: {
-      filters: Record<string, Filter>
-    }
-    page: {
-      offset?: number
-      limit?: number
-    }
+export type OperationList<T extends string = string> = OperationGetBase<T> & {
+  params: {
+    filters: Record<string, Filter>
   }
-
-export type OperationGet<T extends Resource = Resource> =
-  OperationGetBase<T> & {
-    ref: {
-      type: T["type"]
-      id: string
-    }
+  page: {
+    offset?: number
+    limit?: number
   }
+}
 
-export type OperationAdd<T extends string = string> = {
-  op: "add"
+export type OperationGet<T extends string = string> = OperationGetBase<T> & {
+  ref: {
+    type: T
+    id: string
+  }
+}
+
+export type OperationCreate<T extends string = string> = {
+  op: "create"
   ref: {
     type: T
   }
@@ -89,8 +87,8 @@ export type SingleResponse<T extends Resource = Resource> = {
 }
 
 export interface Processor<T extends Resource = Resource, C = any> {
-  list?(input: OperationList<T>, ctx: C): Promise<ListResponse<T>>
-  get?(input: OperationGet<T>, ctx: C): Promise<SingleResponse<T>>
-  add?(input: OperationAdd<T["type"]>, ctx: C): Promise<SingleResponse<T>>
+  create?(input: OperationCreate<T["type"]>, ctx: C): Promise<SingleResponse<T>>
   update?(input: OperationUpdate<T["type"]>, ctx: C): Promise<SingleResponse<T>>
+  list?(input: OperationList<T["type"]>, ctx: C): Promise<ListResponse<T>>
+  get?(input: OperationGet<T["type"]>, ctx: C): Promise<SingleResponse<T>>
 }

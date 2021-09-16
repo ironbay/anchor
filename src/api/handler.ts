@@ -105,9 +105,9 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
         detail: `POST requests must be made to /resource`,
       })
     const body = useBody<{ data: Resource }>(event)
-    return invoke(processor, "add", [
+    return invoke(processor, "create", [
       {
-        op: "add",
+        op: "create",
         data: body.data,
         ref: {
           type: path[0],
