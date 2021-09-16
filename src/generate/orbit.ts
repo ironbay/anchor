@@ -2,6 +2,10 @@ import { Project, VariableDeclarationKind } from "ts-morph"
 import * as Prettier from "prettier"
 import { Generate } from "./generate"
 
+const TYPE_MAPPING = {
+  integer: "number",
+}
+
 export const generate: Generate = (schema) => {
   const project = new Project({})
   const output = project.createSourceFile("orbit.ts", "", {
@@ -18,7 +22,7 @@ export const generate: Generate = (schema) => {
     result[resource.type] = output
     for (let [field, def] of Object.entries(resource.attributes)) {
       output.attributes[field] = {
-        type: def.type,
+        type: TYPE_MAPPING[def.type] || def.type,
       }
     }
 

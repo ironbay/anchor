@@ -55,10 +55,22 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
         detail: `GET requests must be made to /resource or /resource/:id`,
       })
 
+    if (path.length === 2) {
+      return processor.get(
+        {
+          op: "get",
+          ref: {
+            type: path[0],
+            id: path[1],
+          },
+        },
+        ctx
+      )
+    }
+
+    const query = event.queryStringParameters || {}
     const filters: Record<string, Filter> = {}
-    for (let [key, value] of Object.entries(
-      event.queryStringParameters || {}
-    )) {
+    for (let [key, value] of Object.entries(query)) {
       const matches = key.match(/filter\[([^\]]+)\](\[([^\]]+)\]){0,1}/)
       if (!matches) continue
       const attr = matches[1]
@@ -67,17 +79,21 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       filters[attr][op] = value
     }
 
-    const result: OperationGet | OperationList = {
+    const offset = query["page[offset]"]
+    const limit = query["page[limit]"]
+    const result: OperationList = {
       op: "get",
       ref: {
         type: path[0],
-        id: path[1],
       },
       params: {
         filters,
       },
+      page: {
+        offset: offset ? parseInt(offset) : undefined,
+        limit: limit ? parseInt(limit) : undefined,
+      },
     }
-    if (result.ref.id) return processor.get(result, ctx)
     return processor.list(result, ctx)
   }
 

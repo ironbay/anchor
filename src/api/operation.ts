@@ -17,12 +17,18 @@ type OperationGetBase<T extends Resource = Resource> = {
   ref: {
     type: T["type"]
   }
-  params: {
-    filters: Record<string, Filter>
-  }
 }
 
-export type OperationList<T extends Resource = Resource> = OperationGetBase<T>
+export type OperationList<T extends Resource = Resource> =
+  OperationGetBase<T> & {
+    params: {
+      filters: Record<string, Filter>
+    }
+    page: {
+      offset?: number
+      limit?: number
+    }
+  }
 
 export type OperationGet<T extends Resource = Resource> =
   OperationGetBase<T> & {
