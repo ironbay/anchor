@@ -89,8 +89,8 @@ export type SingleResponse<T extends Resource = Resource> = {
 }
 
 export interface Processor<T extends Resource = Resource, C = any> {
-  list(input: OperationList<T>, ctx: C): Promise<ListResponse<T>>
-  get(input: OperationGet<T>, ctx: C): Promise<SingleResponse<T>>
-  add(input: OperationAdd<T["type"]>, ctx: C): Promise<SingleResponse<T>>
-  update(input: OperationUpdate<T["type"]>, ctx: C): Promise<SingleResponse<T>>
+  list?(input: OperationList<T>, ctx: C): Promise<ListResponse<T>>
+  get?(input: OperationGet<T>, ctx: C): Promise<SingleResponse<T>>
+  add?(input: OperationAdd<T["type"]>, ctx: C): Promise<SingleResponse<T>>
+  update?(input: OperationUpdate<T["type"]>, ctx: C): Promise<SingleResponse<T>>
 }

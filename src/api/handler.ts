@@ -56,7 +56,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       })
 
     if (path.length === 2) {
-      return processor.get(
+      return invoke(processor, "get", [
         {
           op: "get",
           ref: {
@@ -64,8 +64,8 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
             id: path[1],
           },
         },
-        ctx
-      )
+        ctx,
+      ])
     }
 
     const query = event.queryStringParameters || {}
@@ -94,7 +94,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
         limit: limit ? parseInt(limit) : undefined,
       },
     }
-    return processor.list(result, ctx)
+    return invoke(processor, "list", [result, ctx])
   }
 
   if (http.method === "POST") {
@@ -105,7 +105,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
         detail: `POST requests must be made to /resource`,
       })
     const body = useBody<{ data: Resource }>(event)
-    return processor.add(
+    return invoke(processor, "add", [
       {
         op: "add",
         data: body.data,
@@ -113,8 +113,8 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
           type: path[0],
         },
       },
-      ctx
-    )
+      ctx,
+    ])
   }
 
   if (http.method === "PATCH") {
@@ -125,7 +125,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
         detail: `PATCH requests must be made to /resource/{id}`,
       })
     const body = useBody<{ data: Resource }>(event)
-    return processor.update(
+    return invoke(processor, "update", [
       {
         op: "update",
         data: body.data,
@@ -134,9 +134,19 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
           id: path[1],
         },
       },
-      ctx
-    )
+      ctx,
+    ])
   }
+}
+
+async function invoke<F extends keyof Processor>(
+  processor: Processor,
+  func: F,
+  params: Parameters<Processor[F]>
+) {
+  const cb = processor[func]
+  if (!cb) return new Errors.NotSupported()
+  return cb.apply(this, params)
 }
 
 function useBody<T>(event: APIGatewayProxyEventV2) {
