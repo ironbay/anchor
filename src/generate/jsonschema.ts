@@ -1,4 +1,4 @@
-import { pascalCase } from "pascal-case"
+import { pascalCase, pascalCaseTransform } from "pascal-case"
 import type { Schema } from "jsonschema"
 import { AttributeDefinition, ResourceDefinition } from "../schema"
 import { Generate } from "./generate"
@@ -7,17 +7,19 @@ export const generate: Generate = (schema: any) => {
   const result: Record<string, Schema> = {}
 
   for (let resource of schema) {
+    const name = pascalCase(resource.type)
+    result[name] = {}
     if (resource.ops?.create !== false) {
       const schema = buildSchema(resource, "create", "optional")
-      result[schema.title] = schema
+      result[name]["create"] = schema
     }
     if (resource.ops?.read !== false) {
       const schema = buildSchema(resource, "read", "required")
-      result[schema.title] = schema
+      result[name]["read"] = schema
     }
     if (resource.ops?.update !== false) {
       const schema = buildSchema(resource, "update", "optional")
-      result[schema.title] = schema
+      result[name]["update"] = schema
     }
   }
 
@@ -31,7 +33,7 @@ function buildSchema<T extends keyof AttributeDefinition["ops"]>(
 ): Schema {
   return {
     // $schema: "https://json-schema.org/draft/2020-12/schema",
-    title: `${pascalCase(resource.type)}DataCreate`,
+    title: pascalCase(`${resource.type}_${op}`),
     additionalProperties: false,
     type: "object",
     properties: {
@@ -65,6 +67,7 @@ function buildRelationships(resource: ResourceDefinition) {
     result.properties[key] = {
       type: "object",
       additionalProperties: false,
+      required: ["data"],
       properties: {
         data: {
           type: "object",
@@ -100,8 +103,9 @@ function buildAttribute<T extends keyof AttributeDefinition["ops"]>(
     }
 
     for (let [key, value] of Object.entries(def.properties)) {
-      result.properties[key] = buildAttribute(value, op, op_fallback)
       const op_value = value.ops?.[op] || op_fallback
+      if (op_value === "omit") continue
+      result.properties[key] = buildAttribute(value, op, op_fallback)
       if (op_value === "required") result.required.push(key)
     }
 

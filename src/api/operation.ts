@@ -59,17 +59,15 @@ export type Resource = {
   type: string
   attributes: Record<string, any>
   relationships: {
-    [key: string]:
-      | {
-          data:
-            | {
-                id: string
-                type: string
-              }
-            | { id: string; type: string }[]
-            | undefined
-        }
-      | undefined
+    [key: string]: {
+      data:
+        | {
+            id: string
+            type: string
+          }
+        | { id: string; type: string }[]
+        | undefined
+    }
   }
 }
 

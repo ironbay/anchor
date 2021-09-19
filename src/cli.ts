@@ -15,10 +15,14 @@ program.command("gen <src>").action((src: string) => {
       config.resources.map((item) => item.type).join(", ")
     )
   )
-  for (let [type, outputs] of Object.entries(config.outputs)) {
+  const cache: Record<string, string> = {}
+  for (let type of ["jsonschema", "typescript", "orbit"]) {
+    const outputs = config.outputs[type]
     console.log(chalk.green("Generating", type))
     const g: Generate = Anchor.Generate[type]
-    const result = g(config.resources)
+    const result = g(config.resources, cache)
+    cache[type] = result
+    if (!outputs) continue
     for (let output of outputs) {
       writeFileSync(output, result)
       console.log(chalk.gray("-> Wrote", output))

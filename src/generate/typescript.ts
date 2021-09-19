@@ -1,38 +1,60 @@
 import { pascalCase } from "pascal-case"
-import { CodeBlockWriter, Project, Writers } from "ts-morph"
-import { AttributeDefinition, ResourceDefinition } from "../schema"
+import { Project } from "ts-morph"
 import * as Prettier from "prettier"
 import { Generate } from "./generate"
 
-export const generate: Generate = (schema) => {
+export const generate: Generate = (schema, cache) => {
+  const json = JSON.parse(cache["jsonschema"])
   const project = new Project({})
   const output = project.createSourceFile("typescript.ts", "", {
     overwrite: true,
   })
 
+  output.addImportDeclaration({
+    namedImports: ["FromSchema"],
+    moduleSpecifier: "json-schema-to-ts",
+  })
+
   for (let resource of schema) {
     const name = pascalCase(resource.type)
+    const ns = output.addNamespace({
+      name,
+      isExported: true,
+    })
 
     if (resource.ops?.read !== false) {
-      output.addTypeAlias({
-        name: `${name}DataRead`,
-        type: writeType(resource, "read", "required"),
+      ns.addStatements([
+        `export const ReadSchema = ${JSON.stringify(json[name].read)} as const`,
+      ])
+      ns.addTypeAlias({
+        name: `Read`,
+        type: `FromSchema<typeof ReadSchema>`,
         isExported: true,
       })
     }
 
     if (resource.ops?.create !== false) {
-      output.addTypeAlias({
-        name: `${name}DataCreate`,
-        type: writeType(resource, "create", "optional"),
+      ns.addStatements([
+        `export const CreateSchema = ${JSON.stringify(
+          json[name].create
+        )} as const`,
+      ])
+      ns.addTypeAlias({
+        name: `Create`,
+        type: `FromSchema<typeof CreateSchema>`,
         isExported: true,
       })
     }
 
     if (resource.ops?.update !== false) {
-      output.addTypeAlias({
-        name: `${name}DataUpdate`,
-        type: writeType(resource, "update", "optional"),
+      ns.addStatements([
+        `export const UpdateSchema = ${JSON.stringify(
+          json[name].update
+        )} as const`,
+      ])
+      ns.addTypeAlias({
+        name: `Update`,
+        type: `FromSchema<typeof UpdateSchema>`,
         isExported: true,
       })
     }
@@ -45,6 +67,7 @@ export const generate: Generate = (schema) => {
   return formatted
 }
 
+/*
 function writeType<T extends keyof AttributeDefinition["ops"]>(
   resource: ResourceDefinition,
   op: T,
@@ -116,3 +139,4 @@ function writeAttribute<T extends keyof AttributeDefinition["ops"]>(
     if (def.nullable) w.write(" | null")
   }
 }
+*/

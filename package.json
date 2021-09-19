@@ -32,6 +32,7 @@
     "ajv-formats": "^2.1.0",
     "chalk": "^4.1.2",
     "commander": "^7.1.0",
+    "json-schema-to-ts": "^1.6.4",
     "jsonschema": "^1.4.0",
     "pascal-case": "^3.1.2",
     "prettier": "^2.3.2",
