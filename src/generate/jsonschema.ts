@@ -64,24 +64,31 @@ function buildRelationships(resource: ResourceDefinition) {
     properties: {},
   }
   for (let [key, value] of Object.entries(resource.relationships)) {
+    const data = {
+      type: "object",
+      additionalProperties: false,
+      required: ["id", "type"],
+      properties: {
+        id: {
+          type: "string",
+        },
+        type: {
+          const: value.resource,
+        },
+      },
+    }
     result.properties[key] = {
       type: "object",
       additionalProperties: false,
       required: ["data"],
       properties: {
-        data: {
-          type: "object",
-          additionalProperties: false,
-          required: ["id", "type"],
-          properties: {
-            id: {
-              type: "string",
-            },
-            type: {
-              const: value.resource,
-            },
-          },
-        },
+        data:
+          value.type === "one"
+            ? data
+            : {
+                type: "array",
+                items: data,
+              },
       },
     }
   }
