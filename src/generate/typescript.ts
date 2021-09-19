@@ -16,9 +16,9 @@ export const generate: Generate = (schema, cache) => {
   })
 
   for (let resource of schema) {
-    const name = pascalCase(resource.type + "_Resource")
+    const name = pascalCase(resource.type)
     const ns = output.addNamespace({
-      name,
+      name: name + "Resource",
       isExported: true,
     })
 
