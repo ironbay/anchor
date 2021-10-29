@@ -1,8 +1,8 @@
 {
   "name": "@ironbay/anchor",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "license": "MIT",
-  "main": "dist",
+  "module": "dist/index.js",
   "bin": {
     "anchor": "dist/cli.js"
   },
@@ -38,5 +38,8 @@
     "prettier": "^2.3.2",
     "ts-morph": "^9.1.0"
   },
-  "repository": "https://github.com/ironbay/anchor"
+  "repository": "https://github.com/ironbay/anchor",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
