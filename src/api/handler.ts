@@ -6,7 +6,6 @@ import {
 } from "aws-lambda"
 import {
   Processor,
-  OperationGet,
   OperationList,
   Response,
   Resource,
@@ -71,12 +70,20 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
     const query = event.queryStringParameters || {}
     const filters: Record<string, Filter> = {}
     for (let [key, value] of Object.entries(query)) {
-      const matches = key.match(/filter\[([^\]]+)\](\[([^\]]+)\]){0,1}/)
+      const matches = key.match(
+        /filter\[([^\]]+)\](\[([^\]]+)\]){0,1}(\[(\d+)\]){0,1}/
+      )
       if (!matches) continue
       const attr = matches[1]
       const op = matches[3] || "eq"
+      const index = matches[4]
       filters[attr] = filters[attr] || {}
-      filters[attr][op] = value
+      if (!index) {
+        filters[attr][op] = value
+        continue
+      }
+      filters[attr][op] = filters[attr][op] || []
+      filters[attr][op][index] = value
     }
 
     const offset = query["page[offset]"]

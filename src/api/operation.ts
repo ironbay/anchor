@@ -10,6 +10,7 @@ export type Filter = {
   lt?: string
   lte?: string
   eq?: string
+  some?: string[]
 }
 
 type OperationGetBase<T extends string = string> = {
