@@ -55,6 +55,14 @@ export type OperationUpdate<T extends string = string> = {
   data: unknown
 }
 
+export type OperationRemove<T extends string = string> = {
+  op: "remove"
+  ref: {
+    type: T
+    id: string
+  }
+}
+
 export type Resource = {
   id: string
   type: string
@@ -91,4 +99,5 @@ export interface Processor<T extends Resource = Resource, C = any> {
   update?(input: OperationUpdate<T["type"]>, ctx: C): Promise<SingleResponse<T>>
   list?(input: OperationList<T["type"]>, ctx: C): Promise<ListResponse<T>>
   get?(input: OperationGet<T["type"]>, ctx: C): Promise<SingleResponse<T>>
+  remove?(input: OperationRemove<T["type"]>, ctx: C): Promise<null>
 }
