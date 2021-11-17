@@ -76,7 +76,7 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       if (!matches) continue
       const attr = matches[1]
       const op = matches[3] || "eq"
-      const index = matches[4]
+      const index = matches[5]
       filters[attr] = filters[attr] || {}
       if (!index) {
         filters[attr][op] = value
