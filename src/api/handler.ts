@@ -145,6 +145,26 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       ctx,
     ])
   }
+
+  if (http.method === "DELETE") {
+    if (path.length !== 2)
+      throw new Errors.GenericError({
+        status: 400,
+        code: "invalid_path",
+        detail: "DELETE requests must be made to /resource/{id}",
+      })
+
+    return invoke(processor, "remove", [
+      {
+        op: "remove",
+        ref: {
+          type: path[0],
+          id: path[1],
+        },
+      },
+      ctx,
+    ])
+  }
 }
 
 async function invoke<F extends keyof Processor>(
