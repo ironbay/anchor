@@ -4,6 +4,12 @@
   "license": "MIT",
   "module": "dist/esm/index.js",
   "main": "dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "bin": {
     "anchor": "dist/cjs/cli.js"
   },
@@ -40,5 +46,8 @@
     "prettier": "^2.3.2",
     "ts-morph": "^9.1.0"
   },
-  "repository": "https://github.com/ironbay/anchor"
+  "repository": "https://github.com/ironbay/anchor",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
