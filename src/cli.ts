@@ -16,7 +16,7 @@ program.command("gen <src>").action((src: string) => {
     )
   )
   const cache: Record<string, string> = {}
-  for (let type of ["jsonschema", "typescript", "orbit"]) {
+  for (let type of ["jsonschema", "typescript", "orbit"] as const) {
     const outputs = config.outputs[type]
     console.log(chalk.green("Generating", type))
     const g: Generate = Anchor.Generate[type]

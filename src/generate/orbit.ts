@@ -2,7 +2,7 @@ import { Project, VariableDeclarationKind } from "ts-morph"
 import * as Prettier from "prettier"
 import { Generate } from "./generate"
 
-const TYPE_MAPPING = {
+const TYPE_MAPPING: Record<string, any> = {
   integer: "number",
 }
 
@@ -12,7 +12,7 @@ export const generate: Generate = (schema) => {
     overwrite: true,
   })
 
-  const result = {}
+  const result: Record<string, any> = {}
 
   for (let resource of schema) {
     const output = {

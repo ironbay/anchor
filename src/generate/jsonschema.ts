@@ -11,25 +11,27 @@ export const generate: Generate = (schema: any) => {
     result[name] = {}
     if (resource.ops?.create !== false) {
       const schema = buildSchema(resource, "create", "optional")
-      result[name]["create"] = schema
+      result[name + "Create"] = schema
     }
     if (resource.ops?.read !== false) {
       const schema = buildSchema(resource, "read", "required")
-      result[name]["read"] = schema
+      result[name + "Read"] = schema
     }
     if (resource.ops?.update !== false) {
       const schema = buildSchema(resource, "update", "optional")
-      result[name]["update"] = schema
+      result[name + "Update"] = schema
     }
   }
 
   return JSON.stringify(result, null, "  ")
 }
 
-function buildSchema<T extends keyof AttributeDefinition["ops"]>(
+function buildSchema<
+  T extends keyof Exclude<AttributeDefinition["ops"], undefined>
+>(
   resource: ResourceDefinition,
   op: T,
-  op_fallback: AttributeDefinition["ops"][T]
+  op_fallback: Exclude<AttributeDefinition["ops"], undefined>[T]
 ): Schema {
   return {
     // $schema: "https://json-schema.org/draft/2020-12/schema",
@@ -77,7 +79,7 @@ function buildRelationships(resource: ResourceDefinition) {
         },
       },
     }
-    result.properties[key] = {
+    result.properties![key] = {
       type: "object",
       additionalProperties: false,
       required: ["data"],
@@ -96,10 +98,12 @@ function buildRelationships(resource: ResourceDefinition) {
   return result
 }
 
-function buildAttribute<T extends keyof AttributeDefinition["ops"]>(
+function buildAttribute<
+  T extends keyof Exclude<AttributeDefinition["ops"], undefined>
+>(
   def: AttributeDefinition,
   op: T,
-  op_fallback: AttributeDefinition["ops"][T]
+  op_fallback: Exclude<AttributeDefinition["ops"], undefined>[T]
 ): Schema {
   if (def.type === "object") {
     const result = {
@@ -112,7 +116,9 @@ function buildAttribute<T extends keyof AttributeDefinition["ops"]>(
     for (let [key, value] of Object.entries(def.properties)) {
       const op_value = value.ops?.[op] || op_fallback
       if (op_value === "omit") continue
+      //@ts-ignore
       result.properties[key] = buildAttribute(value, op, op_fallback)
+      //@ts-ignore
       if (op_value === "required") result.required.push(key)
     }
 

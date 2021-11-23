@@ -2,13 +2,13 @@
   "name": "@ironbay/anchor",
   "version": "0.0.59",
   "license": "MIT",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "bin": {
-    "anchor": "dist/cli.js"
+    "anchor": "dist/cjs/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build tsconfig.esm.json && tsc --build tsconfig.cjs.json",
     "watch": "tsc -w",
     "release": "yarn build && yarn publish"
   },
@@ -16,7 +16,7 @@
     "dist"
   ],
   "devDependencies": {
-    "@tsconfig/node12": "^1.0.7",
+    "@tsconfig/node14": "^1.0.1",
     "@types/aws-lambda": "^8.10.81",
     "@types/commander": "^2.12.2",
     "@types/jest": "^27.0.1",

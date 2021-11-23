@@ -1,11 +1,8 @@
 {
-  "extends": "@tsconfig/node12/tsconfig.json",
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "lib": ["DOM"],
-    "outDir": "dist",
-    "strict": false,
-    "moduleResolution": "node"
+    "noEmit": true,
+    "declaration": true
   },
   "include": ["src"]
 }

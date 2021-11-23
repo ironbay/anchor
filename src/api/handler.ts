@@ -70,20 +70,26 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
     const query = event.queryStringParameters || {}
     const filters: Record<string, Filter> = {}
     for (let [key, value] of Object.entries(query)) {
+      if (!value) continue
       const matches = key.match(
         /filter\[([^\]]+)\](\[([^\]]+)\]){0,1}(\[(\d+)\]){0,1}/
       )
       if (!matches) continue
       const attr = matches[1]
-      const op = matches[3] || "eq"
+      const op = (matches[3] || "eq") as keyof Filter
       const index = matches[5]
       filters[attr] = filters[attr] || {}
       if (!index) {
-        filters[attr][op] = value
+        filters[attr][op] = value as any
         continue
       }
-      filters[attr][op] = filters[attr][op] || []
-      filters[attr][op][index] = value
+      if (op !== "some") continue
+      let exists = filters[attr][op]
+      if (!exists) {
+        exists = []
+        filters[attr][op] = exists
+      }
+      exists[parseInt(index)] = value
     }
 
     const offset = query["page[offset]"]
@@ -165,16 +171,19 @@ async function process<C>(config: Config<C>, event: APIGatewayProxyEventV2) {
       ctx,
     ])
   }
+
+  throw new Errors.NotSupported()
 }
 
 async function invoke<F extends keyof Processor>(
   processor: Processor,
   func: F,
-  params: Parameters<Processor[F]>
+  params: Parameters<Exclude<Processor[F], undefined>>
 ) {
   const cb = processor[func]
-  if (!cb) return new Errors.NotSupported()
-  return cb.apply(this, params)
+  if (!cb) throw new Errors.NotSupported()
+  //@ts-ignore
+  return cb.apply(undefined, params)
 }
 
 function useBody<T>(event: APIGatewayProxyEventV2) {
