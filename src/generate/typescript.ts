@@ -24,7 +24,9 @@ export const generate: Generate = (schema, cache) => {
 
     if (resource.ops?.read !== false) {
       ns.addStatements([
-        `export const ReadSchema = ${JSON.stringify(json[name].read)} as const`,
+        `export const ReadSchema = ${JSON.stringify(
+          json[name + "Read"]
+        )} as const`,
       ])
       ns.addTypeAlias({
         name: `Read`,
@@ -36,7 +38,7 @@ export const generate: Generate = (schema, cache) => {
     if (resource.ops?.create !== false) {
       ns.addStatements([
         `export const CreateSchema = ${JSON.stringify(
-          json[name].create
+          json[name + "Create"]
         )} as const`,
       ])
       ns.addTypeAlias({
@@ -49,7 +51,7 @@ export const generate: Generate = (schema, cache) => {
     if (resource.ops?.update !== false) {
       ns.addStatements([
         `export const UpdateSchema = ${JSON.stringify(
-          json[name].update
+          json[name + "Update"]
         )} as const`,
       ])
       ns.addTypeAlias({

@@ -1,7 +1,6 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
     "declaration": true
   },
   "include": ["src"]
